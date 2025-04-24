@@ -1,5 +1,6 @@
 package com.example.blinkitcloneuser.auth
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.blinkitcloneuser.R
 import com.example.blinkitcloneuser.Utils
+import com.example.blinkitcloneuser.activity.UsersMainActivity
 import com.example.blinkitcloneuser.databinding.FragmentOTPBinding
 import com.example.blinkitcloneuser.models.Users
 import com.example.blinkitcloneuser.viewmodels.AuthViewModel
@@ -42,13 +44,13 @@ class OTPFragment : Fragment() {
         binding.btnLogin.setOnClickListener{
             Utils.showDialog(requireContext(),"Signing you...")
             val editTexts = arrayOf(binding.etOTP1,binding.etOTP2,binding.etOTP3,binding.etOTP4,binding.etOTP5,binding.etOTP6)
-          val otp =  editTexts.joinToString(""){it.text.toString()}
-        if (otp.length<editTexts.size){
-            Utils.showToast(requireContext(),"Please enter the correct OTP")
-        }else{
-            editTexts.forEach { it.text?.clear(); it.clearFocus() }
-            verifyOTP(otp)
-        }
+            val otp =  editTexts.joinToString(""){it.text.toString()}
+            if (otp.length<editTexts.size){
+                Utils.showToast(requireContext(),"Please enter the correct OTP")
+            }else{
+                editTexts.forEach { it.text?.clear(); it.clearFocus() }
+                verifyOTP(otp)
+            }
         }
     }
 
@@ -57,12 +59,14 @@ class OTPFragment : Fragment() {
         val user = Users(uid = Utils.getCurrentUserID(), userPhoneNumber = userNumber, userAddress = null )
         viewModel.signInWithPhoneAuthCredential(otp,userNumber, user)
         lifecycleScope.launch{
-                viewModel.isSignedInSuccessfully.collect{
-                    if (it){
-                        Utils.hideDialog()
-                        Utils.showToast(requireContext(),"Logged IN...")
-                    }
+            viewModel.isSignedInSuccessfully.collect{
+                if (it){
+                    Utils.hideDialog()
+                    Utils.showToast(requireContext(),"Logged IN...")
+                    startActivity(Intent(requireActivity(), UsersMainActivity::class.java))
+                    requireActivity().finish()
                 }
+            }
         }
 
     }
@@ -84,7 +88,7 @@ class OTPFragment : Fragment() {
 
     private fun onBackButtonClicked() {
         binding.tbOtpFragment.setNavigationOnClickListener{
-        findNavController().navigate(R.id.action_OTPFragment_to_signInFragment)
+            findNavController().navigate(R.id.action_OTPFragment_to_signInFragment)
         }
     }
 
@@ -124,3 +128,5 @@ class OTPFragment : Fragment() {
     }
 
 }
+
+

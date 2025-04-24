@@ -3,10 +3,8 @@ package com.example.blinkitcloneuser.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.blinkitcloneuser.R
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 
-class MainActivity : AppCompatActivity() {
+class AuthMainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
