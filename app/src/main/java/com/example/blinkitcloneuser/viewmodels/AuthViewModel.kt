@@ -66,6 +66,7 @@ class AuthViewModel : ViewModel() {
         val credential = PhoneAuthProvider.getCredential(_verificationId.value.toString(),otp)
         Utils.getAuthInstance()!!.signInWithCredential(credential)
             .addOnCompleteListener { task ->
+                user.uid = Utils.getCurrentUserID()
                 if (task.isSuccessful) {
                     FirebaseDatabase.getInstance().getReference("AllUsers").child("Users").child(user.uid!!).setValue(user)
 
